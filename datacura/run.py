@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 import torch
 from torch import optim
 
-from .curator import RandomCurator
+from .curator import *
 from .dataset import *
 from . import model as models
 from .trainer import fit
@@ -12,7 +12,7 @@ def parse_flags():
     a = ArgumentParser()
     a.add_argument('--device', type=str, default='cuda:0')
     a.add_argument('--dataset', type=str, default='cifar100')
-    a.add_argument('--curator', type=str, default='random')
+    a.add_argument('--curator', type=str, default='peeking_evil')
     a.add_argument('--model', type=str, default='Baseline')
     a.add_argument('--optimizer', type=str, default='Adam')
     a.add_argument('--num_epochs', type=int, default=1000)
@@ -67,9 +67,11 @@ def get_dataset(name, device):
         assert False
 
 
-def get_curator(name, dataset):
+def get_curator(name, dataset, model):
     if name == 'random':
         return RandomCurator(dataset)
+    elif name == 'peeking_evil':
+        return PeekingEvilCurator(dataset, model)
     else:
         assert False
 
@@ -88,9 +90,9 @@ def get_optimizer(name, model):
 def main(f):
     device = torch.device(f.device)
     dataset = get_dataset(f.dataset, device)
-    curator = get_curator(f.curator, dataset)
     model = get_model(f.model, dataset.get_x_shape(), dataset.num_classes())
     model.to(device)
+    curator = get_curator(f.curator, dataset, model)
     optimizer = get_optimizer(f.optimizer, model)
     fit(device, dataset, curator, model, optimizer, f.num_epochs,
         f.train_per_epoch, f.val_per_epoch, f.batch_size)
