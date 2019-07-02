@@ -69,7 +69,7 @@ def _load_cifar10_class_names(tar):
     return list(map(lambda s: s.decode('utf-8'), labels))
 
 
-def load_cifar10(verbose=2):
+def load_cifar10(device, verbose=2):
     """
     Load the CIFAR-10 dataset.
     """
@@ -80,7 +80,7 @@ def load_cifar10(verbose=2):
     train, val = _load_cifar10_splits(tar, verbose)
     class_names = _load_cifar10_class_names(tar)
     tar.close()
-    return RamImgClfDataset(train, val, class_names)
+    return RamImgClfDataset(train, val, class_names, device)
 
 
 def _load_cifar100_split(tar, classes, split):
@@ -115,7 +115,7 @@ def _load_cifar100_class_names(tar, classes):
     return list(map(lambda s: s.decode('utf-8'), labels))
 
 
-def _load_cifar100(classes, verbose):
+def _load_cifar100(classes, device, verbose):
     dataset_dir = os.path.join(DATASET_DIR, CIFAR100_NAME)
     local = os.path.join(dataset_dir, os.path.basename(CIFAR100_REMOTE))
     download_if_missing(CIFAR100_REMOTE, local, verbose)
@@ -124,32 +124,32 @@ def _load_cifar100(classes, verbose):
     val = _load_cifar100_split(tar, classes, 'test')
     class_names = _load_cifar100_class_names(tar, classes)
     tar.close()
-    return RamImgClfDataset(train, val, class_names)
+    return RamImgClfDataset(train, val, class_names, device)
 
 
-def load_cifar20(verbose=2):
+def load_cifar20(device, verbose=2):
     """
     Load the CIFAR-20 dataset.
     """
-    return _load_cifar100(20, verbose)
+    return _load_cifar100(20, device, verbose)
 
 
-def load_cifar100(verbose=2):
+def load_cifar100(device, verbose=2):
     """
     Load the CIFAR-100 dataset.
     """
-    return _load_cifar100(100, verbose)
+    return _load_cifar100(100, device, verbose)
 
 
-def load_cifar(classes, verbose=2):
+def load_cifar(classes, device, verbose=2):
     """
     Load a CIFAR dataset, specifying the number of classes (10, 20, or 100).
     """
     if classes == 10:
-        return load_cifar10(verbose)
+        return load_cifar10(device, verbose)
     elif classes == 20:
-        return load_cifar20(verbose)
+        return load_cifar20(device, verbose)
     elif classes == 100:
-        return load_cifar100(verbose)
+        return load_cifar100(device, verbose)
     else:
         assert False

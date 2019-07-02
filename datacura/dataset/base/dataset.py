@@ -3,6 +3,12 @@ class DatasetSplit(object):
     Dataset split base class.
     """
 
+    def __init__(self, device):
+        """
+        Initialize with the device to put the tensors on.
+        """
+        self.device = device
+
     def __len__(self):
         """
         Get the number of samples.

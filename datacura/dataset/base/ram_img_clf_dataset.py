@@ -9,8 +9,8 @@ class RamImgClfDatasetSplit(ClfDatasetSplit):
     In-memory image classification dataset split.
     """
 
-    def __init__(self, x, y):
-        super().__init__()
+    def __init__(self, x, y, device):
+        super().__init__(device)
 
         assert isinstance(x, np.ndarray)
         assert len(x.shape) == 4
@@ -29,12 +29,12 @@ class RamImgClfDatasetSplit(ClfDatasetSplit):
     def __len__(self):
         return len(self.x)
 
-    def __getitem__(self, index, device):
+    def __getitem__(self, index):
         x = self.x[index]
-        x = torch.from_numpy(x, dtype=torch.float32, device=device)
+        x = torch.tensor(x, dtype=torch.float32, device=self.device)
         x /= 255
         y = self.y[index]
-        y = torch.from_numpy(y, dtype=torch.int64, device=device)
+        y = torch.tensor(y, dtype=torch.int64, device=self.device)
         return x, y
 
     def get_x_shape(self):
@@ -52,7 +52,9 @@ class RamImgClfDataset(ClfDataset):
     Image classificaiton dataset kept entirely in CPU memory as numpy arrays.
     """
 
-    def __init__(self, train, val, class_names):
-        train = RamImgClfDatasetSplit(*train)
-        val = RamImgClfDatasetSplit(*val)
+    def __init__(self, train, val, class_names, device):
+        x, y = train
+        train = RamImgClfDatasetSplit(x, y, device)
+        x, y = val
+        val = RamImgClfDatasetSplit(x, y, device)
         super().__init__(train, val, class_names)
