@@ -8,7 +8,7 @@ class RandomCurator(Curator):
     Randomly samples batches out of the dataset.
     """
 
-    def __call__(self, mode, batch_size):
+    def get_batch(self, mode, batch_size):
         if mode:
             split = self.dataset.train
         else:

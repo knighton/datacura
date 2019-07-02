@@ -74,7 +74,7 @@ class Dataset(object):
         """
         Get X sample shape.
         """
-        return self.train.x_shape()
+        return self.train.get_x_shape()
 
     def get_x_dtype(self):
         """
@@ -86,7 +86,7 @@ class Dataset(object):
         """
         Get Y sample shape.
         """
-        return self.train.y_shape()
+        return self.train.get_y_shape()
 
     def get_y_dtype(self):
         """
