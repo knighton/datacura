@@ -1,3 +1,5 @@
+import torch
+
 from .dataset import Dataset, DatasetSplit
 
 
@@ -5,7 +7,9 @@ class ClfDatasetSplit(DatasetSplit):
     """
     Classification dataset split base class.
     """
-    pass
+
+    def get_y_dtype(self):
+        return torch.int64
 
 
 class ClfDataset(Dataset):
@@ -35,4 +39,3 @@ class ClfDataset(Dataset):
         Get the number of classes.
         """
         return len(self.class_names)
-

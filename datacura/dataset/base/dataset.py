@@ -21,17 +21,35 @@ class DatasetSplit(object):
         """
         raise NotImplementedError
 
+    def get_x_dtype(self):
+        """
+        Get X dtype.
+        """
+        raise NotImplementedError
+
     def get_y_shape(self):
         """
         Get Y sample shape.
         """
         raise NotImplementedError
 
-    def get_shape(self):
+    def get_y_dtype(self):
+        """
+        Get Y dtype.
+        """
+        raise NotImplementedError
+
+    def get_shapes(self):
         """
         Get X and Y sample shapes.
         """
-        return self.x_shape(), self.y_shape()
+        return self.get_x_shape(), self.get_y_shape()
+
+    def get_dtypes(self):
+        """
+        Get X and Y dtypes.
+        """
+        return self.get_x_dtype(), self.get_y_dtype()
 
 
 class Dataset(object):
@@ -52,14 +70,32 @@ class Dataset(object):
         """
         return self.train.x_shape()
 
+    def get_x_dtype(self):
+        """
+        Get X dtype.
+        """
+        return self.train.get_x_dtype()
+
     def get_y_shape(self):
         """
         Get Y sample shape.
         """
         return self.train.y_shape()
 
-    def get_shape(self):
+    def get_y_dtype(self):
+        """
+        Get Y dtype.
+        """
+        return self.train.get_y_dtype()
+
+    def get_shapes(self):
         """
         Get X and Y sample shapes.
         """
-        return self.train.get_shape()
+        return self.train.get_shapes()
+
+    def get_dtypes(self):
+        """
+        Get X and Y dtypes.
+        """
+        return self.train.get_dtypes()

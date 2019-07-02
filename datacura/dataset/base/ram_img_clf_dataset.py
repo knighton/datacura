@@ -37,10 +37,13 @@ class RamImgClfDatasetSplit(ClfDatasetSplit):
         y = torch.from_numpy(y, dtype=torch.int64, device=device)
         return x, y
 
-    def x_shape(self):
+    def get_x_shape(self):
         return self.x.shape[1:]
 
-    def y_shape(self):
+    def get_x_dtype(self):
+        return torch.float32
+
+    def get_y_shape(self):
         return self.y.shape[1:]
 
 
