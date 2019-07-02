@@ -4,9 +4,6 @@ from tqdm import tqdm
 from urllib.request import urlretrieve
 
 
-DATASET_DIR = 'data'
-
-
 def _download_urlretrieve(url, filename, verbose):
     class bridge(object):
         progress_bar = None

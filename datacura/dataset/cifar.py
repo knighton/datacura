@@ -4,7 +4,9 @@ import pickle
 import tarfile
 from tqdm import tqdm
 
-from .base import DATASET_DIR, download_if_missing
+from .base.config import DATASET_DIR
+from .base.downloading import download_if_missing
+from .base.ram_img_clf_dataset import RamImgClfDataset
 
 
 CIFAR10_REMOTE = 'https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz'
@@ -51,9 +53,9 @@ def _load_cifar10_splits(tar, verbose):
         bar.close()
 
     train.sort()
-    _, xx, yy = zip(*train)
-    x = np.concatenate(xx, 0)
-    y = np.concatenate(yy, 0)
+    _, x, y = zip(*train)
+    x = np.concatenate(x, 0)
+    y = np.concatenate(y, 0)
     train = x, y
 
     return train, val
@@ -75,10 +77,10 @@ def load_cifar10(verbose=2):
     local = os.path.join(dataset_dir, os.path.basename(CIFAR10_REMOTE))
     download_if_missing(CIFAR10_REMOTE, local, verbose)
     tar = tarfile.open(local, 'r:gz')
-    splits = _load_cifar10_splits(tar, verbose)
+    train, val = _load_cifar10_splits(tar, verbose)
     class_names = _load_cifar10_class_names(tar)
     tar.close()
-    return splits, class_names
+    return RamImgClfDataset(train, val, class_names)
 
 
 def _load_cifar100_split(tar, classes, split):
@@ -122,7 +124,7 @@ def _load_cifar100(classes, verbose):
     val = _load_cifar100_split(tar, classes, 'test')
     class_names = _load_cifar100_class_names(tar, classes)
     tar.close()
-    return (train, val), class_names
+    return RamImgClfDataset(train, val, class_names)
 
 
 def load_cifar20(verbose=2):
